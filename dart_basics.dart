@@ -1,82 +1,67 @@
-
 // Student: Ahmed Abdelrahman Mohamed Salih
-// Reg no: 26669/2024
-
-const String regNo = '26669/2024';
+// Reg no: 26669
+const String regNo = '26669';
 final int d = int.parse(regNo[regNo.length - 1]);
 final int t = int.parse(regNo.substring(regNo.length - 2));
 
-// B2: Count vowels
-// by AAMS
+
+// B2: count vowels (capital letters count too)
+
 int countVowels(String text) {
-  String lowerText = text.toLowerCase();
+  // by AAMS
+  String lower = text.toLowerCase(); // <- THIS line makes capital letters count
   int count = 0;
   int i = 0;
-
-  while (i < lowerText.length) {
-    if ('aeiou'.contains(lowerText[i])) {
+  while (i < lower.length) {
+    String ch = lower[i];
+    if (ch == 'a' || ch == 'e' || ch == 'i' || ch == 'o' || ch == 'u') {
       count++;
     }
     i++;
   }
-
   return count;
 }
 
-// B3: Generate initials
-// by AAMS
+
+// B3: initials, safe with extra spaces and empty input
+
 String initials(String fullName) {
-  String trimmedName = fullName.trim();
-
-  if (trimmedName.isEmpty) {
-    return '';
+  // by AAMS
+  String cleaned = fullName.trim(); // removes leading/trailing spaces
+  if (cleaned.isEmpty) {
+    return ''; // empty string or only spaces
   }
-
-  List<String> names = trimmedName.split(RegExp(r'\s+'));
+  List<String> parts = cleaned.split(RegExp(r'\s+')); // 1+ spaces = one gap
   String result = '';
-
   int i = 0;
-  while (i < names.length) {
-    result += '${names[i][0].toUpperCase()}.';
+  while (i < parts.length) {
+    result += parts[i][0].toUpperCase() + '.';
     i++;
   }
-
   return result;
 }
 
-// C5: Draw a right-aligned triangle
-// by AAMS
+
+// C5: right-aligned triangle, odd rows '*', even rows '#'
+
 void drawTriangle(int height) {
+  // by AAMS
   int row = 1;
-
   while (row <= height) {
-    int spaces = height - row;
-    String line = '';
-
-    int s = 0;
-    while (s < spaces) {
-      line += ' ';
-      s++;
-    }
-
-    String symbol = row.isOdd ? '*' : '#';
-
-    int j = 0;
-    while (j < row) {
-      line += symbol;
-      j++;
-    }
-
-    print(line);
+    String symbol = row % 2 == 1 ? '*' : '#';
+    // spaces on this row = height - row, then `row` symbols
+    print(' ' * (height - row) + symbol * row);
     row++;
   }
 }
 
-// D2: Calculate MoMo transaction fee
-// by AAMS
+
+// D2: MoMo receipt printer
+
 int momoFee(int amount) {
+  // by AAMS
   if (amount <= 0) {
-    return -1;
+    return -1; // invalid
   } else if (amount <= 1000) {
     return 20;
   } else if (amount <= 10000) {
@@ -88,61 +73,50 @@ int momoFee(int amount) {
   }
 }
 
-// D2: Mask phone number
-// by AAMS
 String maskPhone(String phone) {
+  // by AAMS
   if (phone.length != 10) {
     return 'INVALID';
   }
-
-  String result = phone.substring(0, 3);
-
-  int i = 3;
-  while (i < phone.length - 2) {
-    result += '*';
-    i++;
-  }
-
-  result += phone.substring(phone.length - 2);
-
-  return result;
+  String first3 = phone.substring(0, 3);
+  String last2 = phone.substring(phone.length - 2);
+  String stars = '*' * (phone.length - 5); // everything in between
+  return first3 + stars + last2;
 }
 
-// Main function
-// by AAMS
 void main() {
+  // by AAMS
   print('Reg no: $regNo | D = $d | T = $t');
 
-  // B2 tests
+  // ----- B2 -----
   String fullName = 'Ahmed Abdelrahman Mohamed Salih';
   print('$fullName has ${countVowels(fullName)} vowels');
 
-  // B3 tests
+  // ----- B3 -----
   print(initials(fullName));
   print(initials(' ana uwase '));
-  print(initials(' '));
+  print(initials(' ')); // prints an empty line
 
-  // C5 tests
+  // ----- C5 -----
+  print('--- drawTriangle(${d + 3}) ---');
   drawTriangle(d + 3);
+  print('--- drawTriangle(0): nothing should appear below ---');
   drawTriangle(0);
+  print('--- drawTriangle(-2): nothing should appear below ---');
   drawTriangle(-2);
+  print('--- end of triangles ---');
 
-  // D2 receipt printer
-  String phone = maskPhone('0788123456');
-  int totalFees = 0;
+  // ----- D2 -----
+  String phone = '0788123456';
   int i = 1;
-
+  int totalFees = 0;
   while (i <= d + 3) {
     int amount = i * 4000 + t * 100;
     int fee = momoFee(amount);
-
-    print(
-      'Receipt $i | $amount RWF | fee $fee RWF | to $phone',
-    );
-
+    print('Receipt $i | $amount RWF | fee $fee RWF | to ${maskPhone(phone)}');
     totalFees += fee;
     i++;
   }
-
   print('Total fees: $totalFees RWF');
 }
+
